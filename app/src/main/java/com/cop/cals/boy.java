@@ -1,5 +1,6 @@
 package com.cop.cals;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -12,6 +13,8 @@ import android.widget.Toast;
 import android.content.Intent;
 import android.os.Bundle;
 
+import static android.support.v4.app.ActivityCompat.startActivity;
+
 public class boy extends AppCompatActivity {
 
     private GestureDetectorCompat gestureDetectorCompat;
@@ -21,6 +24,8 @@ public class boy extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_boy);
         final MediaPlayer mp = MediaPlayer.create(boy.this,R.raw.bb);
+
+        mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -30,6 +35,7 @@ public class boy extends AppCompatActivity {
                 Intent intent = new Intent(boy.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                mp.stop();
                 finish();
             }
         });
@@ -44,8 +50,30 @@ public class boy extends AppCompatActivity {
                 else {
                     mp.start();
                 }
+
             }
         });
+        /*mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                Intent stopplay= new Intent(boy.this,car.class);
+                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(stopplay);
+
+
+                finish();
+                overridePendingTransition(R.anim.left_in,R.anim.left_out);
+
+
+
+
+
+
+            }
+
+        });*/
+
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
@@ -74,12 +102,15 @@ public class boy extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(boy.this, car.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+
                 finish();
                 overridePendingTransition(R.anim.left_in,R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(boy.this, apple.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.right_out,R.anim.right_in);

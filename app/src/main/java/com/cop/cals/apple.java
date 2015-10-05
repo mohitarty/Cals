@@ -1,6 +1,8 @@
 package com.cop.cals;
 
+import android.app.Activity;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.GestureDetector;
@@ -10,8 +12,10 @@ import android.widget.Button;
 import android.content.Intent;
 import android.os.Bundle;
 
-public class apple extends AppCompatActivity {
+import java.io.IOException;
 
+public class apple extends AppCompatActivity {
+    MediaPlayer mp;
     private GestureDetectorCompat gestureDetectorCompat;
 
     @Override
@@ -28,6 +32,7 @@ public class apple extends AppCompatActivity {
                 Intent intent = new Intent(apple.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                mp.stop();
                 finish();
             }
         });
@@ -39,14 +44,32 @@ public class apple extends AppCompatActivity {
                 if (mp.isPlaying()) {
                     mp.pause();
                 }
-                else {
+                else  {
                     mp.start();
                 }
             }
         });
 
+
+       /* mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                Intent stopplay= new Intent(apple.this,boy.class);
+                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(stopplay);
+                finish();
+                overridePendingTransition(R.anim.left_in,R.anim.left_out);
+
+
+
+            }
+        });*/
+
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -73,12 +96,13 @@ public class apple extends AppCompatActivity {
                 //switch another activity
                 Intent intent = new Intent(apple.this, boy.class);
                 startActivity(intent);
-                finish();
 
-                overridePendingTransition(R.anim.left_in,R.anim.left_out);
+                overridePendingTransition(R.anim.left_in, R.anim.left_out);
+                finish();
             }
 
             return true;
         }
     }
+
 }

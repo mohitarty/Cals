@@ -20,6 +20,7 @@ public class zebra extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zebra);
         final MediaPlayer mp = MediaPlayer.create(zebra.this,R.raw.zz);
+
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -28,6 +29,7 @@ public class zebra extends AppCompatActivity {
 
                 Intent intent = new Intent(zebra.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                mp.stop();
                 startActivity(intent);
             }
         });
@@ -43,6 +45,21 @@ public class zebra extends AppCompatActivity {
                     mp.start();
                 }
             }
+        });
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                Intent stopplay= new Intent(zebra.this,MainActivity.class);
+                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(stopplay);
+                finish();
+                overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+
+
+            }
+
         });
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
@@ -72,12 +89,14 @@ public class zebra extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(zebra.this, MainActivity.class);
-                startActivity(intent);finish();
+                startActivity(intent);
+                finish();
                 overridePendingTransition(R.anim.left_in, R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(zebra.this,yolk.class);
-                startActivity(intent);finish();
+                startActivity(intent);
+                finish();
                 overridePendingTransition(R.anim.right_out, R.anim.right_in);
             }
 

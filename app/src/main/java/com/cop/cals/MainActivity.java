@@ -188,6 +188,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 Intent intent = new Intent(MainActivity.this,credits.class);
                 startActivity(intent);
                 return true;
+            case R.id.action_auto:
+                Intent inte = new Intent(MainActivity.this,apple.class);
+                startActivity(inte);
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);

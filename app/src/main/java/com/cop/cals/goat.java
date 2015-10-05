@@ -21,6 +21,7 @@ public class goat extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goat);
         final MediaPlayer mp = MediaPlayer.create(goat.this,R.raw.gg);
+
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -30,6 +31,7 @@ public class goat extends AppCompatActivity {
                 Intent intent = new Intent(goat.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(intent);
+                mp.stop();
                 finish();
             }
         });
@@ -45,6 +47,18 @@ public class goat extends AppCompatActivity {
                     mp.start();
                 }
             }
+        });
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+
+                Intent stopplay= new Intent(goat.this,horse.class);
+                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(stopplay);
+                finish();
+                overridePendingTransition(R.anim.left_in, R.anim.left_out);
+            }
+
         });
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());

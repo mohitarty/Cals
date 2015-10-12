@@ -22,7 +22,25 @@ public class apple extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apple);
-        final MediaPlayer mp = MediaPlayer.create(apple.this,R.raw.aa);
+        mp = MediaPlayer.create(apple.this,R.raw.aa);
+
+        Intent i = getIntent();
+        boolean ap = i.getBooleanExtra("autoplay", false);
+
+        if(ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                Intent intent = new Intent(apple.this, boy.class);
+                intent.putExtra("autoplay", true);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -95,6 +113,8 @@ public class apple extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(apple.this, boy.class);
+                intent.putExtra("autoplay", true);
+                apple.this.mp.stop();
                 startActivity(intent);
 
                 overridePendingTransition(R.anim.left_in, R.anim.left_out);

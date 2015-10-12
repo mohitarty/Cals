@@ -151,8 +151,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             intent = new Intent(view.getContext(), zebra.class);
         }
 
-        intent.putExtra("autoplay", false);
-
 
         startActivity(intent);
 
@@ -192,7 +190,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return true;
             case R.id.action_auto:
                 Intent inte = new Intent(MainActivity.this,apple.class);
-                inte.putExtra("autoplay", true);
                 startActivity(inte);
                 return true;
 

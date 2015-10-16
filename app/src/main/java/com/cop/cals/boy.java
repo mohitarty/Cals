@@ -17,6 +17,7 @@ import static android.support.v4.app.ActivityCompat.startActivity;
 
 public class boy extends AppCompatActivity {
     MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
 
     @Override
@@ -28,7 +29,7 @@ public class boy extends AppCompatActivity {
         mp.setAudioStreamType(AudioManager.STREAM_MUSIC);
 
         Intent i = getIntent();
-        boolean ap = i.getBooleanExtra("autoplay", false);
+        ap = i.getBooleanExtra("autoplay", false);
 
         if(ap)
             mp.start();
@@ -36,10 +37,13 @@ public class boy extends AppCompatActivity {
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                Intent intent = new Intent(boy.this, car.class);
-                intent.putExtra("autoplay", true);
-                startActivity(intent);
-                finish();
+                if (boy.this.ap) {
+                    Intent intent = new Intent(boy.this, car.class);
+                    intent.putExtra("autoplay", true);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+                    finish();
+                }
             }
         });
 
@@ -73,23 +77,13 @@ public class boy extends AppCompatActivity {
         /*mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
-
-                Intent stopplay= new Intent(boy.this,car.class);
+               Intent stopplay= new Intent(boy.this,car.class);
                 stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(stopplay);
-
-
                 finish();
                 overridePendingTransition(R.anim.left_in,R.anim.left_out);
-
-
-
-
-
-
             }
-
-        });*/
+       });*/
 
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
@@ -107,7 +101,10 @@ public class boy extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-
+        if(boy.this.ap)
+        {
+            return false;
+        }
          /*
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
@@ -120,9 +117,10 @@ public class boy extends AppCompatActivity {
                 //switch another activity
                 Intent intent = new Intent(boy.this, car.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("autoplay", true);
+                intent.putExtra("autoplay", false);
                 boy.this.mp.stop();
                 startActivity(intent);
+
 
                 finish();
                 overridePendingTransition(R.anim.left_in,R.anim.left_out);
@@ -130,7 +128,7 @@ public class boy extends AppCompatActivity {
 
                 Intent intent = new Intent(boy.this, apple.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("autoplay", true);
+                intent.putExtra("autoplay", false);
                 boy.this.mp.stop();
                 startActivity(intent);
                 finish();

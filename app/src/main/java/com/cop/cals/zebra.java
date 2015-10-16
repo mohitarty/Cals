@@ -13,14 +13,37 @@ import android.view.View;
 import android.widget.Button;
 
 public class zebra extends AppCompatActivity {
-
+    MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zebra);
-        final MediaPlayer mp = MediaPlayer.create(zebra.this,R.raw.zz);
+        mp = MediaPlayer.create(zebra.this,R.raw.zz);
+        Intent i = getIntent();
+        ap = i.getBooleanExtra("autoplay", false);
 
+        if (ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (zebra.this.ap) {
+                    Intent stopplay = new Intent(zebra.this, MainActivity.class);
+                    stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    stopplay.putExtra("autoplay", true);
+                    startActivity(stopplay);
+
+                    finish();
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                }
+
+
+            }
+        });
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -46,21 +69,6 @@ public class zebra extends AppCompatActivity {
                 }
             }
         });
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-
-                Intent stopplay= new Intent(zebra.this,MainActivity.class);
-                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(stopplay);
-                finish();
-                overridePendingTransition(R.anim.left_in, R.anim.left_out);
-
-
-
-            }
-
-        });
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
@@ -77,7 +85,10 @@ public class zebra extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-
+            if(zebra.this.ap)
+            {
+                return false;
+            }
          /*
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
@@ -89,12 +100,16 @@ public class zebra extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(zebra.this, MainActivity.class);
+                intent.putExtra("autoplay", false);
+                zebra.this.mp.stop();
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.left_in, R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(zebra.this,yolk.class);
+                intent.putExtra("autoplay", false);
+                zebra.this.mp.stop();
                 startActivity(intent);
                 finish();
                 overridePendingTransition(R.anim.right_out, R.anim.right_in);

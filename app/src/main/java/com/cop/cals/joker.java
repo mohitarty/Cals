@@ -13,12 +13,37 @@ import android.view.View;
 import android.widget.Button;
 
 public class joker extends AppCompatActivity {
+    MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_joker);
-        final MediaPlayer mp = MediaPlayer.create(joker.this,R.raw.jj);
+         mp = MediaPlayer.create(joker.this,R.raw.jj);
+        Intent i = getIntent();
+        ap = i.getBooleanExtra("autoplay", false);
+
+        if (ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (joker.this.ap) {
+                    Intent stopplay = new Intent(joker.this,kite.class);
+                    stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    stopplay.putExtra("autoplay", true);
+                    startActivity(stopplay);
+
+                    finish();
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                }
+
+
+            }
+        });
 
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
@@ -46,22 +71,7 @@ public class joker extends AppCompatActivity {
                 }
             }
         });
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
 
-                Intent stopplay= new Intent(joker.this,kite.class);
-                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(stopplay);
-                finish();
-                overridePendingTransition(R.anim.left_in, R.anim.left_out);
-
-
-
-
-            }
-
-        });
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
@@ -78,7 +88,10 @@ public class joker extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-
+            if(joker.this.ap)
+            {
+                return false;
+            }
          /*
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
@@ -90,11 +103,15 @@ public class joker extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(joker.this, kite.class);
+                intent.putExtra("autoplay", false);
+               joker.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.left_in,R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(joker.this,iron.class);
+                intent.putExtra("autoplay", false);
+                joker.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.right_out,R.anim.right_in);
             }

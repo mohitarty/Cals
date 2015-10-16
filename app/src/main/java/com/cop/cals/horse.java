@@ -13,14 +13,38 @@ import android.view.View;
 import android.widget.Button;
 
 public class horse extends AppCompatActivity {
-
+MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_horse);
-        final MediaPlayer mp = MediaPlayer.create(horse.this,R.raw.hh);
+         mp = MediaPlayer.create(horse.this,R.raw.hh);
 
+        Intent i = getIntent();
+        ap = i.getBooleanExtra("autoplay", false);
+
+        if (ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (horse.this.ap) {
+                    Intent stopplay = new Intent(horse.this, iron.class);
+                    stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    stopplay.putExtra("autoplay", true);
+                    startActivity(stopplay);
+
+                    finish();
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                }
+
+
+            }
+        });
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
         bt.setOnClickListener(new View.OnClickListener() {
@@ -47,18 +71,7 @@ public class horse extends AppCompatActivity {
                 }
             }
         });
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
 
-                Intent stopplay= new Intent(horse.this,iron.class);
-                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(stopplay);
-                finish();
-                overridePendingTransition(R.anim.left_in, R.anim.left_out);
-            }
-
-        });
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
@@ -75,7 +88,9 @@ public class horse extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-
+    if(horse.this.ap){
+        return false;
+    }
          /*
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
@@ -87,11 +102,16 @@ public class horse extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(horse.this, iron.class);
+                intent.putExtra("autoplay", false);
+                horse.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.left_in,R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(horse.this,goat.class);
+                intent.putExtra("autoplay", false);
+                horse.this.mp.stop();
+
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.right_out,R.anim.right_in);
             }

@@ -16,6 +16,7 @@ import java.io.IOException;
 
 public class apple extends AppCompatActivity {
     MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
 
     @Override
@@ -25,7 +26,7 @@ public class apple extends AppCompatActivity {
         mp = MediaPlayer.create(apple.this,R.raw.aa);
 
         Intent i = getIntent();
-        boolean ap = i.getBooleanExtra("autoplay", false);
+        ap = i.getBooleanExtra("autoplay", false);
 
         if(ap)
             mp.start();
@@ -33,10 +34,13 @@ public class apple extends AppCompatActivity {
         mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
-                Intent intent = new Intent(apple.this, boy.class);
-                intent.putExtra("autoplay", true);
-                startActivity(intent);
-                finish();
+                if(apple.this.ap) {
+                    Intent intent = new Intent(apple.this, boy.class);
+                    intent.putExtra("autoplay", true);
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+                    finish();
+                }
             }
         });
 
@@ -102,7 +106,10 @@ public class apple extends AppCompatActivity {
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
 
-         /*
+            if(apple.this.ap)
+            {
+                return false;
+            }/*
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
           Toast.LENGTH_SHORT).show();
@@ -113,7 +120,7 @@ public class apple extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(apple.this, boy.class);
-                intent.putExtra("autoplay", true);
+                intent.putExtra("autoplay", false);
                 apple.this.mp.stop();
                 startActivity(intent);
 

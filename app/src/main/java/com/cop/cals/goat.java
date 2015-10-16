@@ -13,17 +13,42 @@ import android.view.View;
 import android.widget.Button;
 
 public class goat extends AppCompatActivity {
-
+    MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goat);
-        final MediaPlayer mp = MediaPlayer.create(goat.this,R.raw.gg);
+        mp = MediaPlayer.create(goat.this, R.raw.gg);
 
-        Button bt=(Button)findViewById(R.id.button2);
-        Button bt2 =(Button)findViewById(R.id.button3);
+        Intent i = getIntent();
+        ap = i.getBooleanExtra("autoplay", false);
+
+        if (ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (goat.this.ap) {
+                    Intent stopplay = new Intent(goat.this, horse.class);
+                    stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    stopplay.putExtra("autoplay", true);
+                    startActivity(stopplay);
+
+                    finish();
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                }
+
+
+            }
+        });
+
+        Button bt = (Button) findViewById(R.id.button2);
+        Button bt2 = (Button) findViewById(R.id.button3);
         bt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,27 +67,16 @@ public class goat extends AppCompatActivity {
 
                 if (mp.isPlaying()) {
                     mp.pause();
-                }
-                else {
+                } else {
                     mp.start();
                 }
             }
-        });
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
 
-                Intent stopplay= new Intent(goat.this,horse.class);
-                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(stopplay);
-                finish();
-                overridePendingTransition(R.anim.left_in, R.anim.left_out);
-            }
 
         });
-
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -76,7 +90,10 @@ public class goat extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-
+            if(goat.this.ap)
+            {
+                return false;
+            }
          /*
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
@@ -88,11 +105,16 @@ public class goat extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(goat.this, horse.class);
-                startActivity(intent);finish();
+                intent.putExtra("autoplay", false);
+                goat.this.mp.stop();
+                startActivity(intent);
+                finish();
                 overridePendingTransition(R.anim.left_in,R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(goat.this,fly.class);
+                intent.putExtra("autoplay", false);
+                goat.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.right_out,R.anim.right_in);
             }

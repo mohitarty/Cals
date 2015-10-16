@@ -13,13 +13,37 @@ import android.view.View;
 import android.widget.Button;
 
 public class rat extends AppCompatActivity {
-
+MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_rat);
-        final MediaPlayer mp = MediaPlayer.create(rat.this,R.raw.rr);
+         mp = MediaPlayer.create(rat.this,R.raw.rr);
+        Intent i = getIntent();
+        ap = i.getBooleanExtra("autoplay", false);
+
+        if (ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (rat.this.ap) {
+                    Intent stopplay = new Intent(rat.this, ship.class);
+                    stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    stopplay.putExtra("autoplay", true);
+                    startActivity(stopplay);
+
+                    finish();
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                }
+
+
+            }
+        });
 
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
@@ -47,22 +71,7 @@ public class rat extends AppCompatActivity {
                 }
             }
         });
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
 
-                Intent stopplay= new Intent(rat.this,ship.class);
-                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(stopplay);
-                finish();
-                overridePendingTransition(R.anim.left_in, R.anim.left_out);
-
-
-
-
-            }
-
-        });
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
@@ -84,18 +93,25 @@ public class rat extends AppCompatActivity {
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
           Toast.LENGTH_SHORT).show();
-         */
+         */if(rat.this.ap)
+            {
+                return false;
+            }
 
             if(event2.getX() < event1.getX()){
 
 
                 //switch another activity
                 Intent intent = new Intent(rat.this, ship.class);
+                intent.putExtra("autoplay", false);
+                rat.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.left_in, R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(rat.this,queen.class);
+                intent.putExtra("autoplay", false);
+               rat.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.right_out, R.anim.right_in);
             }

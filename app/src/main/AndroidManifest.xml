@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cop.cals"
-    android:installLocation="preferExternal" >
+    >
+
+<uses-sdk android:maxSdkVersion="22"
+    android:minSdkVersion="15"
+    android:targetSdkVersion="21"/>
 
     <application
         android:allowBackup="true"

@@ -65,5 +65,7 @@
     <string name="title_activity_splash">splash</string>
     <string name="title_activity_credits">credits</string>
     <string name="action_auto">autoplay</string>
+    <string name="title">Mohit Kumar</string>
+    <string name="description">2nd year (CSE)-ASET</string>
 
 </resources>

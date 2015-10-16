@@ -13,13 +13,37 @@ import android.view.View;
 import android.widget.Button;
 
 public class yolk extends AppCompatActivity {
-
+MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_yolk);
-        final MediaPlayer mp = MediaPlayer.create(yolk.this,R.raw.yy);
+         mp = MediaPlayer.create(yolk.this,R.raw.yy);
+        Intent i = getIntent();
+        ap = i.getBooleanExtra("autoplay", false);
+
+        if (ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if (yolk.this.ap) {
+                    Intent stopplay = new Intent(yolk.this, zebra.class);
+                    stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    stopplay.putExtra("autoplay", true);
+                    startActivity(stopplay);
+
+                    finish();
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                }
+
+
+            }
+        });
 
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
@@ -47,22 +71,8 @@ public class yolk extends AppCompatActivity {
                 }
             }
         });
-        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-
-                Intent stopplay= new Intent(yolk.this,zebra.class);
-                stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(stopplay);
-                finish();
-                overridePendingTransition(R.anim.left_in, R.anim.left_out);
 
 
-
-
-            }
-
-        });
 
         gestureDetectorCompat = new GestureDetectorCompat(this, new MyGestureListener());
     }
@@ -91,11 +101,15 @@ public class yolk extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(yolk.this,zebra.class);
+                intent.putExtra("autoplay", false);
+                yolk.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.left_in, R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(yolk.this,xray.class);
+                intent.putExtra("autoplay", false);
+                yolk.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.right_out, R.anim.right_in);
 

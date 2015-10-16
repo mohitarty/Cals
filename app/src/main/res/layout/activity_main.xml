@@ -1,7 +1,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000">
+    android:background="@drawable/ic_bg">
+
+
+
 
     <GridView
         android:id="@+id/gridView1"
@@ -11,9 +14,12 @@
         android:columnWidth="100dp"
         android:drawSelectorOnTop="true"
         android:gravity="center"
-        android:numColumns="auto_fit"
+        android:numColumns="2"
         android:stretchMode="columnWidth"
         android:verticalSpacing="5dp"
+
+        android:paddingLeft="20dp"
+        android:paddingRight="5dp"
         android:focusable="true"
         android:clickable="true"/>
 

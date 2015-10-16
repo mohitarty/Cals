@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,9 +23,11 @@ import android.widget.GridView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+    Toolbar toolbar;
     GridView gv;
     Context context;
     ArrayList prgmName;
+
     public static String[] prgmNameList = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     public static int[] prgmImages = {
             R.drawable.a,
@@ -62,9 +65,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
         gv = (GridView) findViewById(R.id.gridView1);
         gv.setAdapter(new CustomAdapter(this, prgmNameList, prgmImages));
         gv.setOnItemClickListener(this);
+
     }
 
 

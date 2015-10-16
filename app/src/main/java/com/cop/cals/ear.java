@@ -13,7 +13,8 @@ import android.view.View;
 import android.widget.Button;
 
 public class ear extends AppCompatActivity {
-
+    MediaPlayer mp;
+    boolean ap;
     private GestureDetectorCompat gestureDetectorCompat;
 
     @Override
@@ -21,7 +22,32 @@ public class ear extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ear);
 
-        final MediaPlayer mp = MediaPlayer.create(ear.this,R.raw.ee);
+       mp = MediaPlayer.create(ear.this,R.raw.ee);
+
+        Intent i = getIntent();
+        ap= i.getBooleanExtra("autoplay", false);
+
+        if(ap)
+            mp.start();
+
+        mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                if(ear.this.ap) {
+                    Intent stopplay = new Intent(ear.this, fly.class);
+                    stopplay.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    stopplay.putExtra("autoplay", true);
+                    startActivity(stopplay);
+
+                    finish();
+                    overridePendingTransition(R.anim.left_in, R.anim.left_out);
+
+                }
+
+
+
+            }
+        });
 
         Button bt=(Button)findViewById(R.id.button2);
         Button bt2 =(Button)findViewById(R.id.button3);
@@ -81,7 +107,10 @@ public class ear extends AppCompatActivity {
         @Override
         public boolean onFling(MotionEvent event1, MotionEvent event2,
                                float velocityX, float velocityY) {
-
+            if(ear.this.ap)
+            {
+                return false;
+            }
          /*
          Toast.makeText(getBaseContext(),
           event1.toString() + "\n\n" +event2.toString(),
@@ -93,11 +122,15 @@ public class ear extends AppCompatActivity {
 
                 //switch another activity
                 Intent intent = new Intent(ear.this, fly.class);
+                intent.putExtra("autoplay",false);
+                ear.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.left_in,R.anim.left_out);
             }else if (event2.getX() > event1.getX()){
 
                 Intent intent = new Intent(ear.this, donkey.class);
+                intent.putExtra("autoplay",false);
+                ear.this.mp.stop();
                 startActivity(intent);finish();
                 overridePendingTransition(R.anim.right_out,R.anim.right_in);
             }
